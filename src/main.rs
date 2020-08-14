@@ -9,7 +9,7 @@ use config::*;
 use failure::Error;
 use git_utils::get_staged_file_paths;
 use lint::*;
-use log::{info, trace};
+use log::{debug, info, trace, warn};
 use std::env;
 use std::path::PathBuf;
 use std::time::Instant;
@@ -31,15 +31,26 @@ fn main() -> Result<(), Error> {
 
     let config = get_config(args.config)?;
 
-    trace!("config: {:?}", config);
+    let linters = config.linters.unwrap();
+
+    trace!("linters: {:?}", linters);
 
     let staged_files: Vec<PathBuf> = get_staged_file_paths()?;
 
-    for file in staged_files {
-        match file.extension() {
-            Some(v) => trace!("{:?}", v),
-            None => trace!("no extension"),
-        };
+    let grouped_staged_files: std::vec::IntoIter<(&str, Vec<PathBuf>)> =
+        Box::new(staged_files.into_iter())
+            .group_by(|file| match &file.extension() {
+                Some(ext) => ext.to_str().unwrap(),
+                None => "None",
+            })
+            .into_iter();
+
+    for (ext, files) in grouped_staged_files {
+        let linters_for_ext: Vec<&LinterConfig> = get_linters_for_ext(&ext, &linters);
+        match linters_for_ext.is_empty() {
+            true => warn!("No linters specified for [{}] skipping...", &ext),
+            false => info!("we have linters for [{}] linting...", &ext),
+        }
     }
 
     // NOTE: we are done log total execution time

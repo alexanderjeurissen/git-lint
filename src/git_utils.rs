@@ -1,4 +1,5 @@
 use failure::Error;
+use log::{info, trace};
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -11,7 +12,11 @@ fn get_staged_file_names() -> Result<String, Error> {
         .arg("--name-only")
         .output()?;
 
-    Ok(String::from_utf8(output.stdout)?)
+    let output_str: String = String::from_utf8(output.stdout)?;
+
+    info!("staged files: \n{}", output_str);
+
+    Ok(output_str)
 }
 
 // NOTE: get the root path of current git repository
@@ -41,6 +46,8 @@ pub fn get_staged_file_paths() -> Result<Vec<PathBuf>, Error> {
             return path;
         })
         .collect();
+
+    trace!("staged file paths: {:?}", staged_files);
 
     return Ok(staged_files);
 }
