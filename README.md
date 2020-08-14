@@ -31,9 +31,12 @@ tested using [hyperfine](https://github.com/sharkdp/hyperfine)
 
 ![image](https://github.com/alexanderjeurissen/lint-staged/blob/main/public/assets/screenshots/benchmark.png)
 
-*This means a increased execution speed by approx 60%*
+_**This means a increased execution speed by approx 60%**_
 
-```js name=lint-staged.config.js
+
+**lint-staged.config.js**
+
+```js
 module.exports = {
   "*.{js,html, html.erb}": filenames =>
     filenames.map(filename => `bin/eslint-daemon-wrapper --fix ${filename}`),
@@ -46,7 +49,9 @@ module.exports = {
 };
 ```
 
-```js name=lint-staged.config.toml
+**lint-staged.config.toml**
+
+```toml 
 [[linters]]
 name = 'eslint'
 cmd = 'bin/eslint-daemon-wrapper'
