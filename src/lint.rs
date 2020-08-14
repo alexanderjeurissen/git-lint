@@ -1,6 +1,6 @@
 use failure::Error;
 use itertools::Itertools;
-use log::{trace, warn};
+use log::{debug, info, trace, warn};
 use rayon::prelude::*;
 use regex::{NoExpand, Regex};
 use serde::{Deserialize, Serialize};
@@ -30,7 +30,7 @@ pub fn get_linters_for_ext<'a>(
 
 fn lint_file(file: &PathBuf, linter: &LinterConfig) -> Result<String, Error> {
   let start = Instant::now();
-  trace!("[{0:?}] STARTED for {1:?}", &linter.name, &file);
+  debug!("[{0:?}] STARTED for {1:?}", &linter.name, &file);
 
   // Insert the file in the cmd
   let file_re = Regex::new(r"\{file\}")?;
@@ -57,11 +57,9 @@ fn lint_file(file: &PathBuf, linter: &LinterConfig) -> Result<String, Error> {
 
   let duration = start.elapsed();
 
-  trace!(
+  debug!(
     "[{0:?}] FINISHED for {1:?} after {2:?}",
-    &linter.name,
-    &file,
-    duration
+    &linter.name, &file, duration
   );
   Ok(String::from_utf8(result)?)
 }
@@ -69,7 +67,7 @@ fn lint_file(file: &PathBuf, linter: &LinterConfig) -> Result<String, Error> {
 pub fn lint_files(files: Vec<&PathBuf>, linters: &Vec<&LinterConfig>) -> Result<(), Error> {
   linters.into_par_iter().panic_fuse().try_for_each(|linter| {
     let start = Instant::now();
-    trace!("[{:?}] STARTED", &linter);
+    info!("[{:?}] STARTED", &linter);
 
     for file in files.iter() {
       let lint_output = lint_file(&file, &linter)?;
@@ -79,7 +77,7 @@ pub fn lint_files(files: Vec<&PathBuf>, linters: &Vec<&LinterConfig>) -> Result<
     }
 
     let duration = start.elapsed();
-    trace!("[{0:?}] FINISHED after {1:?}", &linter, duration);
+    info!("[{0:?}] FINISHED after {1:?}", &linter, duration);
 
     Ok(())
   })

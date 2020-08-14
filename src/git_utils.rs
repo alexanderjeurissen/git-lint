@@ -9,7 +9,9 @@ fn get_staged_file_names() -> Result<String, Error> {
     let output = Command::new("git")
         .arg("diff")
         .arg("--staged")
+        .arg("--diff-filter=ACMR")
         .arg("--name-only")
+        .arg("-z")
         .output()?;
 
     let output_str: String = String::from_utf8(output.stdout)?;
