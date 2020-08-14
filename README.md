@@ -12,6 +12,48 @@ Heavily inspired by:
 - [lint-emit](https://github.com/ragone/lint-emit)
 - [yarn lint-staged](https://github.com/okonet/lint-staged)
 
+### Configuration WIP
+
+**git-lint.config.toml**
+
+```toml
+[[presets]]
+name = 'staged'
+description = '
+cmd = 'git diff'
+args= [
+  '--staged', # only staged files
+  '--diff-filter=ACMR', # only Added, Copied, Modified, Renamed changes
+  '--no-color', # dont color output
+  '--no-ext-diff', # dont allow external diff tools as they might mess up diffs
+  '--name-only' # only fetch the filename
+]
+
+[[linters]]
+name = 'eslint'
+cmd = 'bin/eslint-daemon-wrapper'
+args = ['--fix', '{file}']
+ext = ['js', 'html', 'html.erb']
+
+[[linters]]
+name = 'stylelint'
+cmd = 'stylelint'
+args = ['--fix', '{file}']
+ext = ['css']
+
+[[linters]]
+name = 'stylelint'
+cmd = 'stylelint'
+args = ['--fix', '--syntax=scss', '{file}']
+ext = ['scss']
+
+[[linters]]
+name = 'rubocop'
+cmd = 'bin/rubocop-daemon-wrapper'
+args = ['{file}', '--auto-correct']
+ext = ['rb', 'erb']
+```
+
 
 ### Motivation
 
