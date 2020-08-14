@@ -1,5 +1,7 @@
 #  WIP: git-lint
 
+![image](public/assets/screenshots/linter copy.png)
+
 Lint staged files using designated linters per file extension, written in Rust for optimal performance
 
 Heavily inspired by:
