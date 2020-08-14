@@ -1,4 +1,3 @@
-use crate::git_utils::get_root_path;
 use crate::lint::LinterConfig;
 use failure::{bail, Error};
 use log::{debug, error, trace};
@@ -10,9 +9,7 @@ pub struct Config {
     pub linters: Option<Vec<LinterConfig>>,
 }
 
-pub fn get_config(config: Option<PathBuf>) -> Result<Config, Error> {
-    let root_path = get_root_path()?;
-
+pub fn get_config(config: Option<PathBuf>, root_path: &String) -> Result<Config, Error> {
     trace!("root_path: {}", &root_path);
 
     let config_path: PathBuf = match config {

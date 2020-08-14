@@ -7,11 +7,10 @@ mod lint;
 // use atty::Stream;
 use config::*;
 use failure::Error;
-use git_utils::get_staged_file_paths;
+use git_utils::{git_root_path, git_staged_file_paths};
 use itertools::Itertools;
 use lint::*;
-use log::{debug, info, trace, warn};
-use rayon::prelude::*;
+use log::{info, trace, warn};
 use std::path::PathBuf;
 use std::str::{FromStr, ParseBoolError};
 use std::time::Instant;
@@ -48,13 +47,15 @@ fn main() -> Result<(), Error> {
         return Ok(());
     }
 
-    let config = get_config(args.config)?;
+    let root_path: String = git_root_path()?;
+
+    let config = get_config(args.config, &root_path)?;
 
     let linters = config.linters.unwrap();
 
     trace!("linters: {:?}", linters);
 
-    let staged_files: Vec<PathBuf> = get_staged_file_paths()?;
+    let staged_files: Vec<PathBuf> = git_staged_file_paths(&root_path)?;
 
     &staged_files
         .iter()
