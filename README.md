@@ -1,4 +1,4 @@
-#  WIP: lint-staged
+#  WIP: git-lint
 
 Lint staged files using designated linters per file extension, written in Rust for optimal performance
 
@@ -85,7 +85,7 @@ module.exports = {
 };
 ```
 
-**lint-staged.config.toml**
+**git-lint.config.toml**
 
 ```toml 
 [[linters]]
