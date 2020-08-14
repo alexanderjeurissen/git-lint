@@ -32,7 +32,9 @@ Removing the need to run `node` is the premise around using `NetCat` for librari
 - [rubocop-daemon](https://github.com/fohte/rubocop-daemon#more-speed)
 - [eslint-d](https://github.com/mantoni/eslint_d.js#moar-speed)
 
+To give you a sense on node.js startup time, here is a benchmark comparison for a simple hello world function, recorded using [hyperfine](https://github.com/sharkdp/hyperfine):
 
+![image](https://github.com/alexanderjeurissen/lint-staged/blob/main/public/assets/screenshots/hello_world_benchmark.png?raw=true)
 
 #### Merge-commits
 
@@ -62,7 +64,7 @@ What I deem essential is:
 4. unstash unstaged changes
 
 
-### Benchmarks (WIP
+### Benchmarks (WIP)
 
 tested using [hyperfine](https://github.com/sharkdp/hyperfine)
 
@@ -89,7 +91,7 @@ module.exports = {
 
 **git-lint.config.toml**
 
-```toml 
+```toml
 [[linters]]
 name = 'eslint'
 cmd = 'bin/eslint-daemon-wrapper'
