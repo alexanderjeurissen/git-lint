@@ -19,7 +19,7 @@ Heavily inspired by:
 ```toml
 [[presets]]
 name = 'staged'
-description = '
+description = 'Run linter for all staged files'
 cmd = 'git diff'
 args= [
   '--staged', # only staged files
