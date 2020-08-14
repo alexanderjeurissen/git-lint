@@ -1,6 +1,6 @@
 #  WIP: git-lint
 
-![image](public/assets/screenshots/linter copy.png)
+![image](https://github.com/alexanderjeurissen/git-lint/tree/main/public/assets/screenshots/linter%20copy.png)
 
 Lint staged files using designated linters per file extension, written in Rust for optimal performance
 
