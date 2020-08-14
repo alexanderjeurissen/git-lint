@@ -10,7 +10,6 @@ pub struct LinterConfig {
   pub args: Vec<String>,
   pub ext: Vec<String>,
 }
-
 pub fn get_linters_for_ext<'a>(
   extension: &String,
   linters: &'a Vec<LinterConfig>,
