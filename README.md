@@ -2,7 +2,10 @@
 
 ![image](https://github.com/alexanderjeurissen/git-lint/blob/main/public/assets/screenshots/linter%20copy.png?raw=true)
 
-Lint staged files using designated linters per file extension, written in Rust for optimal performance
+- Lint git diff using designated linters per file extension.
+- WIP: Supports presets for different `git diff` commands.
+- WIP: upports only running specific linters for specific presets.
+- written in Rust for optimal performance
 
 Heavily inspired by:
 
