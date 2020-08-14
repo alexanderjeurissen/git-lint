@@ -8,8 +8,10 @@ mod lint;
 use config::*;
 use failure::Error;
 use git_utils::get_staged_file_paths;
+use itertools::Itertools;
 use lint::*;
 use log::{debug, info, trace, warn};
+use rayon::prelude::*;
 use std::path::PathBuf;
 use std::str::{FromStr, ParseBoolError};
 use std::time::Instant;
@@ -41,14 +43,9 @@ fn main() -> Result<(), Error> {
     let args = Cli::from_args();
 
     // NOTE: stop execution if LINT_STAGED is not set
-    match args.staged {
-        true => {
-            trace!("LINT_STAGED set, resuming execution... {}", &args.staged);
-        }
-        false => {
-            trace!("LINT_STAGED not set or invalid value, skipping...");
-            return Ok(());
-        }
+    if args.staged == false {
+        trace!("LINT_STAGED not set or invalid value, skipping...");
+        return Ok(());
     }
 
     let config = get_config(args.config)?;
@@ -58,21 +55,21 @@ fn main() -> Result<(), Error> {
     trace!("linters: {:?}", linters);
 
     let staged_files: Vec<PathBuf> = get_staged_file_paths()?;
-    let file_extension = |file: PathBuf| match &file.extension() {
-        Some(ext) => ext.to_str().unwrap().to_string(),
-        None => "None".to_string(),
-    };
 
-    // let grouped_staged_files: std::vec::IntoIter<(&str, Vec<PathBuf>)> =
-    // staged_files.iter().group_by(file_extension).into_iter();
-
-    // for (ext, files) in grouped_staged_files {
-    //     let linters_for_ext: Vec<&LinterConfig> = get_linters_for_ext(&ext, &linters);
-    //     match linters_for_ext.is_empty() {
-    //         true => warn!("No linters specified for [{}] skipping...", &ext),
-    //         false => info!("we have linters for [{}] linting...", &ext),
-    //     }
-    // }
+    &staged_files
+        .iter()
+        .group_by(|file| match &file.extension() {
+            Some(ext) => ext.to_str().unwrap(),
+            None => "None",
+        })
+        .into_iter()
+        .for_each(|(ext, files)| {
+            let linters_for_ext: Vec<&LinterConfig> = get_linters_for_ext(ext, &linters);
+            match linters_for_ext.is_empty() {
+                false => lint_files(files.collect(), &linters_for_ext).unwrap(),
+                true => warn!("No linters specified for [{}] skipping...", &ext),
+            }
+        });
 
     // NOTE: we are done log total execution time
     let duration = start.elapsed();
